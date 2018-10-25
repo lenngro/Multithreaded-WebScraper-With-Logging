@@ -38,8 +38,8 @@ public class WebScraper {
             String[] propsArr = propValues.getPropValues();
 
             String urlToScrape = propsArr[0];
-            String  logFilePath = propsArr[1];
-            String  downloadFolderPath = propsArr[2];
+            String logFilePath = propsArr[1];
+            String downloadFolderPath = propsArr[2];
 
             Logger logger = new Logger(logFilePath);
             String checkForReturn = askForReturn();

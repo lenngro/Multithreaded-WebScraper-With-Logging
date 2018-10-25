@@ -21,15 +21,15 @@ public class Scraper {
         this.logger = logger;
         this.visitedLinks = logger.loadLog();
         this.downloadFolderPath = downloadFolderPath;
-        baseUrl = "";
+        this.baseUrl = "";
     }
 
     public void setBaseUrl(String url) {
-        baseUrl = url;
+        this.baseUrl = url;
     }
 
     public boolean isInSiteLink(String url) {
-        return (url.startsWith(baseUrl) || url.startsWith("/") || url.startsWith("./") || url.startsWith("../"));
+        return (url.startsWith(this.baseUrl) || url.startsWith("/") || url.startsWith("./") || url.startsWith("../"));
     }
 
     private boolean pageIsArticle(Element body) {
@@ -112,8 +112,9 @@ public class Scraper {
         int randomNum = ThreadLocalRandom.current().nextInt(1, 1000000000);
 
         try {
-            FileWriter fileWriter = new FileWriter(this.downloadFolderPath + randomNum + ".json");
-
+            new File("../downloads").mkdirs();
+            FileWriter fileWriter = new FileWriter("../downloads/" + randomNum + ".json");
+            //FileWriter fileWriter = new FileWriter(new File(this.downloadFolderPath + "/" + randomNum + ".json"));
             fileWriter.write(jsonString.toString());
             fileWriter.close();
             System.out.println("Successfully wrote doc to disk.");
