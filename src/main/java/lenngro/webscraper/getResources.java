@@ -1,9 +1,13 @@
 package lenngro.webscraper;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+/*
+The getResources is responsible for reading from the config file in WebScraperWithlogging/src/main/resources/config.properties.
+Returns: String[] propsArr.
+ */
 
 public class getResources {
 
@@ -27,6 +31,7 @@ public class getResources {
             String urlToScrape = prop.getProperty("urlToScrape");
             String logFilePath = prop.getProperty("logFilePath");
             String downloadFolderPath = prop.getProperty("downloadFolderPath");
+
             propsArr[0] = urlToScrape;
             propsArr[1] = logFilePath;
             propsArr[2] = downloadFolderPath;
@@ -34,12 +39,15 @@ public class getResources {
             return propsArr;
 
         } catch (Exception e) {
+
             System.out.println("Exception: " + e);
+
         } finally {
+
             inputStream.close();
+
         }
+
         return propsArr;
     }
-
-
 }

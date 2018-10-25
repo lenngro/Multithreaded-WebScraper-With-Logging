@@ -1,5 +1,4 @@
 package lenngro.webscraper;
-
 import java.io.*;
 import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
@@ -9,32 +8,63 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.json.*;
 
+/*
+The Scraper class is responsible for scraping websites, checking if the URLs are valid and if so, download them to disk.
+ */
+
+
 public class Scraper {
 
     public HashSet<String> visitedLinks;
     public String baseUrl;
     public Logger logger;
-    private String downloadFolderPath;
 
-    public Scraper(Logger logger, String downloadFolderPath) {
+    public Scraper(Logger logger) {
 
         this.logger = logger;
         this.visitedLinks = logger.loadLog();
-        this.downloadFolderPath = downloadFolderPath;
         this.baseUrl = "";
     }
 
+    /*
+    setBaseUrl(String url) sets the base url - the url that determines
+    if another page is an external link or an in-page link.
+    Returns:
+     */
+
     public void setBaseUrl(String url) {
+
         this.baseUrl = url;
+
     }
 
-    public boolean isInSiteLink(String url) {
+    /*
+    isInSiteLink(String url) checks if a given URL is an external link or an in-page link. True if it is an internal page,
+    False if it is an external link.
+    Returns: Boolean
+     */
+
+    private boolean isInSiteLink(String url) {
+
         return (url.startsWith(this.baseUrl) || url.startsWith("/") || url.startsWith("./") || url.startsWith("../"));
+
     }
+
+    /*
+    Checks if the given article is an (newspaper) article.
+    Returns: Boolean
+     */
 
     private boolean pageIsArticle(Element body) {
+
         return body.hasClass("article");
+
     }
+
+    /*
+    downloadContent(Document document, String url) downloads the content of a given document and saves it to disk.
+    Returns:
+     */
 
     private void downloadContent(Document document, String url) {
 
@@ -105,28 +135,41 @@ public class Scraper {
 
         }
         catch (JSONException jex) {
+
             jex.printStackTrace();
             System.out.println("Could not create json file.");
+
         }
+
+        /*
+        Find a random int as name, then try to save the above JSON to disk.
+         */
 
         int randomNum = ThreadLocalRandom.current().nextInt(1, 1000000000);
 
         try {
+
             new File("../downloads").mkdirs();
             FileWriter fileWriter = new FileWriter("../downloads/" + randomNum + ".json");
-            //FileWriter fileWriter = new FileWriter(new File(this.downloadFolderPath + "/" + randomNum + ".json"));
             fileWriter.write(jsonString.toString());
             fileWriter.close();
             System.out.println("Successfully wrote doc to disk.");
+
         }
         catch (Exception ex)
         {
+
             ex.printStackTrace();
             System.out.println("Could not write document to disk.");
-        }
 
+        }
     }
 
+    /*
+    scrape(String url) scrapes the website by extracting the document content and the its URLs from a given URL,
+    then checking if the page is really an article and if so, downloading the content.
+    It then iteratively scrapes every URL which was found in the document as long as it is an insite link.
+     */
 
     public void scrape(String url) {
 
@@ -141,7 +184,9 @@ public class Scraper {
 
             // if site is an article, download
             if (pageIsArticle(document.body())) {
+
                 downloadContent(document, docUrl);
+
             }
 
             for (Element  foundUrl : foundUrls) {
@@ -153,15 +198,20 @@ public class Scraper {
 
                     System.out.println("Scraping: "+ absNextUrl);
                     visitedLinks.add(absNextUrl);
+
                     try {
+
                         this.logger.writeToLog(absNextUrl);
+
                     }
+
                     catch (Exception ex) {
+
                         System.out.println("Failed writing");
+
                     }
                     scrape(absNextUrl);
                 }
-
             }
 
         } catch (Exception ex) {

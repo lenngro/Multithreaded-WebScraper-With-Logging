@@ -1,8 +1,10 @@
 package lenngro.webscraper;
-
-
 import java.io.*;
 import java.util.HashSet;
+
+/*
+The Logger class is responsible for logging every valid scraped URL.
+ */
 
 public class Logger {
 
@@ -15,22 +17,52 @@ public class Logger {
 
     }
 
-    public void writeToLog(String url) {
+    /*
+    loadLog() Loads the log file from disk.
+    Returns: HashSet<String> visitedLinks
+     */
 
-        System.out.println("Writing link to log...");
-        try {
-            FileWriter fw = new FileWriter(this.logFilePath, true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            this.logWriter = new PrintWriter(bw);
-            this.logWriter.println(url);
+    public HashSet<String> loadLog() {
+
+        HashSet<String> visitedLinks;
+        visitedLinks = new HashSet<String>();
+
+        System.out.println("Reading all visited links from log...");
+        File log = new File(logFilePath);
+        String currentUrl = "";
+
+        if (log.isFile() && log.canRead()) {
+
+            try {
+
+                FileInputStream in = new FileInputStream(log);
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+
+                try {
+
+                    while ((currentUrl = br.readLine()) != null) {
+                        visitedLinks.add(currentUrl);
+
+                    }
+                } finally {
+
+                    in.close();
+
+                }
+
+            } catch (IOException ex) {
+
+                ex.printStackTrace();
+
+            }
         }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally {
-            this.logWriter.close();
-        }
+        return visitedLinks;
     }
+
+    /*
+    getLastUrl() tries to read the last URL that was saved in the log file.
+    Returns: String lastUrl or "-1" if no URL was found.
+     */
 
     public String getLastUrl() {
 
@@ -64,32 +96,24 @@ public class Logger {
         }
     }
 
-    public HashSet<String> loadLog() {
+    /*
+    writeToLog(String url) writes a given url to the log file.
+    Returns:
+     */
+    public void writeToLog(String url) {
 
-        HashSet<String> visitedLinks;
-        visitedLinks = new HashSet<String>();
-
-        System.out.println("Reading all visited links from log...");
-        File log = new File(logFilePath);
-        String currentUrl = "";
-
-        if (log.isFile() && log.canRead()) {
-            try {
-                FileInputStream in = new FileInputStream(log);
-                BufferedReader br = new BufferedReader(new InputStreamReader(in));
-
-                try {
-                    while ((currentUrl = br.readLine()) != null) {
-                        visitedLinks.add(currentUrl);
-                    }
-                } finally {
-                    in.close();
-                }
-
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+        System.out.println("Writing link to log...");
+        try {
+            FileWriter fw = new FileWriter(this.logFilePath, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            this.logWriter = new PrintWriter(bw);
+            this.logWriter.println(url);
         }
-        return visitedLinks;
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            this.logWriter.close();
+        }
     }
 }
