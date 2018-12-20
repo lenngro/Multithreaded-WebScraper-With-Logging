@@ -1,4 +1,4 @@
-# WebScraperWithLogging
+# Web-Scraper-With-Logging
 
 # Usage
 1. Install Apache Maven
