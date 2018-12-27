@@ -13,7 +13,7 @@ public class getResources {
 
     public String[] getPropValues() throws IOException {
 
-        String propsArr[] = new String[3];
+        String propsArr[] = new String[4];
         String propFileName = "config.properties";
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
 
@@ -31,10 +31,12 @@ public class getResources {
             String urlToScrape = prop.getProperty("urlToScrape");
             String logFilePath = prop.getProperty("logFilePath");
             String numThreads = prop.getProperty("numThreads");
+            String downloadFolderPath = prop.getProperty("downloadFolderPath");
 
             propsArr[0] = urlToScrape;
             propsArr[1] = logFilePath;
             propsArr[2] = numThreads;
+            propsArr[3] = downloadFolderPath;
 
             return propsArr;
 

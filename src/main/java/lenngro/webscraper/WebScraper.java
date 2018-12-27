@@ -11,8 +11,14 @@ public class WebScraper {
     private static String urlToScrape;
     private static String logFilePath;
     private static int numThreads;
+    private static String downloadFolderPath;
 
-    private static void loadConfigFile() {
+    /*
+    loadConfigFile reads in the config file and stores the values in the respective variables.
+    Returns:
+     */
+
+    public static void loadConfigFile() {
 
         getResources propValues = new getResources();
         try {
@@ -20,6 +26,7 @@ public class WebScraper {
             urlToScrape = propsArr[0];
             logFilePath = propsArr[1];
             numThreads = Integer.parseInt(propsArr[2]);
+            downloadFolderPath = propsArr[3];
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -27,7 +34,12 @@ public class WebScraper {
 
     }
 
-    private static String askYesOrNo() {
+    /*
+    getUserAnswer() reads in the reply from the user.
+    Returns: String answer
+     */
+
+    private static String getUserAnswer() {
 
         Scanner in = new Scanner(System.in);
         String answer = in.nextLine().trim();
@@ -54,27 +66,27 @@ public class WebScraper {
             if (lastUrl != "-1") {
                 System.out.println("Found logging history. Do you want to continue from the last seen URL? (y/n)");
                 System.out.println(lastUrl);
-                String answer = askYesOrNo();
+                String answer = getUserAnswer();
 
                 if (answer.equals("y")) {
 
                     System.out.println("Starting scraping...");
 
                     for (int i = 0; i < numThreads; i++) {
-                        ScraperThread scraper = new ScraperThread(logger, lastUrl);
+                        ScraperThread scraper = new ScraperThread(logger, lastUrl, downloadFolderPath);
                         scraper.start();
                     }
                 } else if (answer.equals("n")) {
 
                     System.out.println("Do you want to start scraping from the URL found in the config file? (y/n)");
-                    String confAnswer = askYesOrNo();
+                    String confAnswer = getUserAnswer();
 
                     if (confAnswer.equals("y")) {
 
                         System.out.println("Starting scraping...");
 
                         for (int i = 0; i < numThreads; i++) {
-                            ScraperThread scraper = new ScraperThread(logger, urlToScrape);
+                            ScraperThread scraper = new ScraperThread(logger, urlToScrape, downloadFolderPath);
                             scraper.start();
                         }
                     }

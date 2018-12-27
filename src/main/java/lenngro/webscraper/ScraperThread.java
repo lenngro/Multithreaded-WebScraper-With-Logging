@@ -19,15 +19,22 @@ public class ScraperThread extends Thread {
     private static volatile HashSet<String> visitedLinks;
     public static String baseUrl;
     public static Logger logger;
+    private String downloadFolderPath;
 
-    public ScraperThread(Logger logger, String urlToScrape) {
+    public ScraperThread(Logger logger, String baseUrl, String downloadFolderPath) {
 
         this.logger = logger;
         this.visitedLinks = logger.loadLog();
 
-        this.baseUrl = urlToScrape;
+        this.baseUrl = baseUrl;
+        this.downloadFolderPath = downloadFolderPath;
     }
 
+
+    /*
+    run() starts the thread.
+    Returns:
+     */
     public void run() {
 
         System.out.println("Thread " + this.getId()+  "is alive: " + this.isAlive());
@@ -157,8 +164,8 @@ public class ScraperThread extends Thread {
 
         try {
 
-            new File("./downloads").mkdirs();
-            FileWriter fileWriter = new FileWriter("./downloads/" + randomNum + ".json");
+            new File(downloadFolderPath).mkdirs();
+            FileWriter fileWriter = new FileWriter(downloadFolderPath + "/" + randomNum + ".json");
             fileWriter.write(jsonString.toString());
             fileWriter.close();
             System.out.println("Successfully wrote doc to disk.");
