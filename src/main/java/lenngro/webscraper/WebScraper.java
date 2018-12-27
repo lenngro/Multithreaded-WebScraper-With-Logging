@@ -1,4 +1,5 @@
 package lenngro.webscraper;
+
 import java.util.Scanner;
 
 /*
@@ -7,39 +8,28 @@ The WebScraper class is responsible for asking the user some questions about the
 
 public class WebScraper {
 
-    /*
-    askForReturn() asks the user if he would like to return to an old scraping process based on the log.
-    Returns: Boolean answer
-     */
-    private static String askForReturn() {
+    private static String urlToScrape;
+    private static String logFilePath;
+    private static int numThreads;
 
-        Scanner in = new Scanner(System.in);
-        System.out.println("Do you want to return to an already started scraping process? (y/n)");
-        String answer = in.nextLine().trim();
-        System.out.println("Answer: " + answer);
-        return answer;
+    private static void loadConfigFile() {
+
+        getResources propValues = new getResources();
+        try {
+            String[] propsArr = propValues.getPropValues();
+            urlToScrape = propsArr[0];
+            logFilePath = propsArr[1];
+            numThreads = Integer.parseInt(propsArr[2]);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
-    /*
-    askForContinue() asks the user if he wants to continue scraping from the last url found in the log.
-    Returns: Boolean answer
-     */
-    private static String askForContinue() {
+    private static String askYesOrNo() {
 
         Scanner in = new Scanner(System.in);
-        System.out.println("Do you want to continue scraping from this URL? (y/n)");
-        String answer = in.nextLine().trim();
-        System.out.println("Answer: " + answer);
-        return answer;
-    }
-
-    /*
-    askForConfStart() asks the user if he would like to scrape the URL which was found in the config file.
-    Returns: Boolean answer
-     */
-    private static String askForConfStart() {
-        Scanner in = new Scanner(System.in);
-        System.out.println("Do you want to continue scraping from the URL in the config file? (y/n)");
         String answer = in.nextLine().trim();
         System.out.println("Answer: " + answer);
         return answer;
@@ -48,119 +38,53 @@ public class WebScraper {
     /*
     main(String args[]) starts the entire program. It looks up the content of the config file, initializes the logger and starts the user conversation.
      */
-    public static void main(String args[]) {
+
+    public static void main(String[] args) {
 
         try {
 
-            getResources propValues = new getResources();
-            String[] propsArr = propValues.getPropValues();
-            String urlToScrape = propsArr[0];
-            String logFilePath = propsArr[1];
+            loadConfigFile();
 
             Logger logger = new Logger(logFilePath);
-
-            String checkForReturn = askForReturn();
             String lastUrl = "-1";
-            Boolean inputRead = false;
 
+            System.out.println("Checking for existing logging history...");
+            lastUrl = logger.getLastUrl();
 
-            while (!inputRead) {
-
-                if (checkForReturn.equals("y")) {
-
-                    inputRead = true;
-                    lastUrl = logger.getLastUrl();
-
-                } else if (checkForReturn.equals("n")) {
-
-                    inputRead = true;
-                    String confStart = askForConfStart();
-                    System.out.println(urlToScrape);
-
-                    if (confStart.equals("y")) {
-
-                        System.out.println("Starting scraping...");
-                        Scraper scraper = new Scraper(logger);
-                        scraper.setBaseUrl(urlToScrape);
-                        scraper.scrape(urlToScrape);
-
-                    }
-                    else {
-
-                        System.out.println("Stopping Scraper...");
-
-                    }
-                } else {
-
-                    System.out.println("Asking again...");
-                    checkForReturn = askForReturn();
-
-                }
-            }
-
-            /*
-            If there is an URL found in the log:
-             */
-            if (!lastUrl.equals("-1")) {
-
-                System.out.println("Last URL which was scraped: ");
+            if (lastUrl != "-1") {
+                System.out.println("Found logging history. Do you want to continue from the last seen URL? (y/n)");
                 System.out.println(lastUrl);
+                String answer = askYesOrNo();
 
-                inputRead = false;
-                String continueScraping = askForContinue();
+                if (answer.equals("y")) {
 
-                while (!inputRead) {
+                    System.out.println("Starting scraping...");
 
-                    /*
-                    If the scraping shall be continued from the last URL in the log, start scraping.
-                     */
-                    if (continueScraping.equals("y")) {
+                    for (int i = 0; i < numThreads; i++) {
+                        ScraperThread scraper = new ScraperThread(logger, lastUrl);
+                        scraper.start();
+                    }
+                } else if (answer.equals("n")) {
 
-                        inputRead = true;
+                    System.out.println("Do you want to start scraping from the URL found in the config file? (y/n)");
+                    String confAnswer = askYesOrNo();
+
+                    if (confAnswer.equals("y")) {
+
                         System.out.println("Starting scraping...");
-                        Scraper scraper = new Scraper(logger);
-                        scraper.setBaseUrl(lastUrl);
-                        scraper.scrape(lastUrl);
 
-                    }
-                    /*
-                    If not, ask for continuing from the URL found in the config file.
-                     */
-                    else if (continueScraping.equals("n")) {
-
-                        inputRead = true;
-                        String confStart = askForConfStart();
-                        System.out.println(urlToScrape);
-
-                        /*
-                        If yes, start scraping.
-                         */
-                        if (confStart.equals("y")) {
-
-                            System.out.println("Starting scraping...");
-                            Scraper scraper = new Scraper(logger);
-                            scraper.setBaseUrl(urlToScrape);
-                            scraper.scrape(urlToScrape);
-
+                        for (int i = 0; i < numThreads; i++) {
+                            ScraperThread scraper = new ScraperThread(logger, urlToScrape);
+                            scraper.start();
                         }
-                        /*
-                        Stopping.
-                         */
-                        else {
-
-                            System.out.println("Stopping Scraper...");
-
-                        }
-                    } else {
-
-                        System.out.println("Asking again...");
-                        continueScraping = askForContinue();
-
                     }
+
                 }
-
-                System.out.println("Finished scraping.");
+                else {
+                    System.out.println("Couldn't understand answer. Exiting.");
+                }
             }
+            System.out.println("Finished scraping.");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

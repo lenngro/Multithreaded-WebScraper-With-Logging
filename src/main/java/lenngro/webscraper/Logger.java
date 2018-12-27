@@ -66,14 +66,11 @@ public class Logger {
 
     public String getLastUrl() {
 
-        System.out.println("Checking for existing logging history...");
-
         File log = new File(logFilePath);
         String currentURL = "";
         String lastUrl = "";
 
         if (log.isFile() && log.canRead()) {
-            System.out.println("Found logging history.");
             try {
                 FileInputStream in = new FileInputStream(log);
                 BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -103,6 +100,7 @@ public class Logger {
     public void writeToLog(String url) {
 
         System.out.println("Writing link to log...");
+
         try {
             FileWriter fw = new FileWriter(this.logFilePath, true);
             BufferedWriter bw = new BufferedWriter(fw);

@@ -30,11 +30,11 @@ public class getResources {
 
             String urlToScrape = prop.getProperty("urlToScrape");
             String logFilePath = prop.getProperty("logFilePath");
-            String downloadFolderPath = prop.getProperty("downloadFolderPath");
+            String numThreads = prop.getProperty("numThreads");
 
             propsArr[0] = urlToScrape;
             propsArr[1] = logFilePath;
-            propsArr[2] = downloadFolderPath;
+            propsArr[2] = numThreads;
 
             return propsArr;
 
