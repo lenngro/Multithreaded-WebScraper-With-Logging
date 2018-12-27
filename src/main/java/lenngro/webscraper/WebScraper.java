@@ -60,7 +60,8 @@ public class WebScraper {
             Logger logger = new Logger(logFilePath);
             String lastUrl = "-1";
 
-            System.out.println("Checking for existing logging history...");
+            System.out.println("Checking for existing logging history in directory: ");
+            System.out.println(logFilePath);
             lastUrl = logger.getLastUrl();
 
             if (lastUrl != "-1") {

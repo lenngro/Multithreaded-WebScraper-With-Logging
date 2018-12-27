@@ -2,10 +2,10 @@ package lenngro.webscraper;
 import org.junit.Assert;
 import org.junit.Test;
 
-class ConfigFileTest {
+public class ConfigFileTest {
 
     @Test
-    public static void testConfigFile() {
+    public void testConfigFile() {
 
         getResources resources = new getResources();
 
@@ -22,7 +22,4 @@ class ConfigFileTest {
         }
     }
 
-    public static void main(String[] args) {
-        testConfigFile();
-    }
 }
