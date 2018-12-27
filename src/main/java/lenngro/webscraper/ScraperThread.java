@@ -8,22 +8,37 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.json.*;
 
+
 /*
-The Scraper class is responsible for scraping websites, checking if the URLs are valid and if so, download them to disk.
+The ScraperThread class is responsible for scraping websites, checking if the URLs are valid and if so, downloading them to disk.
  */
 
 
-public class Scraper {
+public class ScraperThread extends Thread {
 
-    public HashSet<String> visitedLinks;
-    public String baseUrl;
-    public Logger logger;
+    private static volatile HashSet<String> visitedLinks;
+    public static String baseUrl;
+    public static Logger logger;
+    private String downloadFolderPath;
 
-    public Scraper(Logger logger) {
+    public ScraperThread(Logger logger, String baseUrl, String downloadFolderPath) {
 
         this.logger = logger;
         this.visitedLinks = logger.loadLog();
-        this.baseUrl = "";
+
+        this.baseUrl = baseUrl;
+        this.downloadFolderPath = downloadFolderPath;
+    }
+
+
+    /*
+    run() starts the thread.
+    Returns:
+     */
+    public void run() {
+
+        System.out.println("Thread " + this.getId()+  "is alive: " + this.isAlive());
+        scrape(this.baseUrl);
     }
 
     /*
@@ -149,8 +164,8 @@ public class Scraper {
 
         try {
 
-            new File("../downloads").mkdirs();
-            FileWriter fileWriter = new FileWriter("../downloads/" + randomNum + ".json");
+            new File(downloadFolderPath).mkdirs();
+            FileWriter fileWriter = new FileWriter(downloadFolderPath + "/" + randomNum + ".json");
             fileWriter.write(jsonString.toString());
             fileWriter.close();
             System.out.println("Successfully wrote doc to disk.");
@@ -166,9 +181,42 @@ public class Scraper {
     }
 
     /*
+    writeLinkToLog writes the given URL to the log file.
+    Returns:
+     */
+
+    private synchronized void writeLinkToLog(String url) {
+
+        this.logger.writeToLog(url);
+    }
+
+    /*
+    linkHasBeenVisited checks if the given url has already been visited by this or another thread by
+    considering the shared variable visitedLinks.
+    Returns: boolean
+     */
+
+    private boolean linkHasBeenVisited(String url) {
+
+        return this.visitedLinks.contains(url);
+
+    }
+
+    /*
+    addLinkToVisitedLinks adds the given URl to the shared variable visitedLinks.
+    Returns:
+     */
+
+    private void addLinkToVisitedLinks(String url) {
+
+        visitedLinks.add(url);
+    }
+
+    /*
     scrape(String url) scrapes the website by extracting the document content and the its URLs from a given URL,
     then checking if the page is really an article and if so, downloading the content.
     It then iteratively scrapes every URL which was found in the document as long as it is an insite link.
+    Returns:
      */
 
     public void scrape(String url) {
@@ -194,14 +242,14 @@ public class Scraper {
                 String relNextUrl = foundUrl.attr("href").toLowerCase();
                 String absNextUrl = foundUrl.absUrl("href").toLowerCase();
 
-                if (!visitedLinks.contains(absNextUrl) && isInSiteLink(relNextUrl)) {
+                if (!linkHasBeenVisited(absNextUrl) && isInSiteLink(relNextUrl)) {
 
                     System.out.println("Scraping: "+ absNextUrl);
-                    visitedLinks.add(absNextUrl);
+                    addLinkToVisitedLinks(absNextUrl);
 
                     try {
 
-                        this.logger.writeToLog(absNextUrl);
+                        writeLinkToLog(absNextUrl);
 
                     }
 
