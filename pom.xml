@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>WebScraper</groupId>
-    <artifactId>WebScraperWithLogging</artifactId>
-    <version>0.1</version>
+    <artifactId>WebScraper</artifactId>
+    <version>0.2</version>
 
     <build>
         <plugins>
