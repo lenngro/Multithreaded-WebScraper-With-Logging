@@ -1,6 +1,6 @@
-# Web-Scraper-With-Logging
+### Multithreaded WebScraper with Logging
 
-# Usage
+### Usage
 1. Install Apache Maven
 2. Configure settings in /src/main/resources/config.properties
 3. Run "mvn clean install" in project root
