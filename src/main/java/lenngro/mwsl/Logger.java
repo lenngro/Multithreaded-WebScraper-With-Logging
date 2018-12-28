@@ -16,6 +16,11 @@ public class Logger {
         this.logFilePath = logFilePath;
 
     }
+    
+    /*
+    createNewLogFile() creates a new log file if no previous logging history was found in the path provided in the config file.
+    Returns:
+    */
 
     public void createNewLogFile() throws IOException {
         File log = new File(logFilePath);
