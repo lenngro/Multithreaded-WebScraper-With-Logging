@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /*
-The getResources is responsible for reading from the config file in WebScraperWithlogging/src/main/resources/config.properties.
+The getResources is responsible for reading from the config file in /src/main/resources/config.properties.
 Returns: String[] propsArr.
  */
 
