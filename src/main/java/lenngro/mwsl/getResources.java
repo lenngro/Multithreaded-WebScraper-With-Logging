@@ -1,4 +1,4 @@
-package lenngro.webscraper;
+package lenngro.mwsl;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +13,7 @@ public class getResources {
 
     public String[] getPropValues() throws IOException {
 
-        String propsArr[] = new String[4];
+        String propsArr[] = new String[5];
         String propFileName = "config.properties";
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
 
@@ -32,11 +32,13 @@ public class getResources {
             String logFilePath = prop.getProperty("logFilePath");
             String numThreads = prop.getProperty("numThreads");
             String downloadFolderPath = prop.getProperty("downloadFolderPath");
+            String keywords = prop.getProperty("keywords");
 
             propsArr[0] = urlToScrape;
             propsArr[1] = logFilePath;
             propsArr[2] = numThreads;
             propsArr[3] = downloadFolderPath;
+            propsArr[4] = keywords;
 
             return propsArr;
 

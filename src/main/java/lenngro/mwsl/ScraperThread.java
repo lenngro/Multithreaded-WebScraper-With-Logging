@@ -1,4 +1,4 @@
-package lenngro.webscraper;
+package lenngro.mwsl;
 import java.io.*;
 import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
@@ -20,14 +20,16 @@ public class ScraperThread extends Thread {
     public static String baseUrl;
     public static Logger logger;
     private String downloadFolderPath;
+    private String[] keywords;
 
-    public ScraperThread(Logger logger, String baseUrl, String downloadFolderPath) {
+    public ScraperThread(Logger logger, String baseUrl, String downloadFolderPath, String[] keywords) {
 
         this.logger = logger;
         this.visitedLinks = logger.loadLog();
 
         this.baseUrl = baseUrl;
         this.downloadFolderPath = downloadFolderPath;
+        this.keywords = keywords;
     }
 
 
@@ -70,10 +72,14 @@ public class ScraperThread extends Thread {
     Returns: Boolean
      */
 
-    private boolean pageIsArticle(Element body) {
+    private boolean checkForKeywords(Element body) {
 
-        return body.hasClass("article");
+        for (String keyword: this.keywords) {
+            if (body.hasClass(keyword)) return true;
+        }
+        return false;
 
+        //return body.hasClass("article");
     }
 
     /*
@@ -231,7 +237,7 @@ public class ScraperThread extends Thread {
             System.out.printf("Found %d links. %n", foundUrls.size());
 
             // if site is an article, download
-            if (pageIsArticle(document.body())) {
+            if (checkForKeywords(document.body())) {
 
                 downloadContent(document, docUrl);
 

@@ -1,4 +1,4 @@
-package lenngro.webscraper;
+package lenngro.mwsl;
 
 import java.util.Scanner;
 
@@ -12,6 +12,7 @@ public class WebScraper {
     private static String logFilePath;
     private static int numThreads;
     private static String downloadFolderPath;
+    private static String[] keywordArray;
 
     /*
     loadConfigFile reads in the config file and stores the values in the respective variables.
@@ -27,6 +28,7 @@ public class WebScraper {
             logFilePath = propsArr[1];
             numThreads = Integer.parseInt(propsArr[2]);
             downloadFolderPath = propsArr[3];
+            keywordArray = propsArr[4].split("\\s*,\\s*");
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -74,7 +76,7 @@ public class WebScraper {
                     System.out.println("Starting scraping...");
 
                     for (int i = 0; i < numThreads; i++) {
-                        ScraperThread scraper = new ScraperThread(logger, lastUrl, downloadFolderPath);
+                        ScraperThread scraper = new ScraperThread(logger, lastUrl, downloadFolderPath, keywordArray);
                         scraper.start();
                     }
                 } else if (answer.equals("n")) {
@@ -87,7 +89,7 @@ public class WebScraper {
                         System.out.println("Starting scraping...");
 
                         for (int i = 0; i < numThreads; i++) {
-                            ScraperThread scraper = new ScraperThread(logger, urlToScrape, downloadFolderPath);
+                            ScraperThread scraper = new ScraperThread(logger, urlToScrape, downloadFolderPath, keywordArray);
                             scraper.start();
                         }
                     }

@@ -1,4 +1,4 @@
-package lenngro.webscraper;
+package lenngro.mwsl;
 import java.io.*;
 import java.util.HashSet;
 
