@@ -99,6 +99,22 @@ public class WebScraper {
                     System.out.println("Couldn't understand answer. Exiting.");
                 }
             }
+            else {
+
+                System.out.println("Do you want to create one? (y/n)");
+                String answer = getUserAnswer();
+                if (answer.equals("y")) {
+                    logger.createNewLogFile();
+
+                    System.out.println("Starting scraping...");
+
+                    for (int i = 0; i < numThreads; i++) {
+                        ScraperThread scraper = new ScraperThread(logger, urlToScrape, downloadFolderPath, keywordArray);
+                        scraper.start();
+                    }
+
+                }
+            }
             System.out.println("Finished scraping.");
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -17,6 +17,11 @@ public class Logger {
 
     }
 
+    public void createNewLogFile() throws IOException {
+        File log = new File(logFilePath);
+        log.createNewFile();
+    }
+
     /*
     loadLog() Loads the log file from disk.
     Returns: HashSet<String> visitedLinks

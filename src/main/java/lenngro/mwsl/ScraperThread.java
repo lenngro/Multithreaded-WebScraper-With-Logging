@@ -26,7 +26,6 @@ public class ScraperThread extends Thread {
 
         this.logger = logger;
         this.visitedLinks = logger.loadLog();
-
         this.baseUrl = baseUrl;
         this.downloadFolderPath = downloadFolderPath;
         this.keywords = keywords;
