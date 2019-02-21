@@ -20,3 +20,5 @@ These instructions will get you a copy of the project up and running on your loc
 4. `mvn clean install` in project root
 5. `cd target`
 6. `java -classpath jarName-jar-with-dependencies.jar lenngro.mwsl.WebScraper`
+
+Note: `sudo` rights might be required in order to create new directories while saving the scraped pages.
