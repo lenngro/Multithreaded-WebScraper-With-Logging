@@ -1,6 +1,6 @@
 # Multithreaded WebScraper with Logging
 
-Implementation of a multi-threaded web scraper. The scraped websites are captured in a log. In case of an error or cancel, the scraping can continue from the last seen page.
+Implementation of a multi-threaded web scraper. The scraped websites are captured in a log. In case of an error or cancel, the scraping can continue from the last seen page. It's possible to set keywords which will be searched for while scraping. A page's content will only be downloaded if it contains those keywords.
 
 ## Getting Started
 
