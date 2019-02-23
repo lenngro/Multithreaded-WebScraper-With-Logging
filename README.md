@@ -8,7 +8,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-- Java
+- Java 11 (previous versions have not been tested)
 - Jsoup
 - Apache Maven
 
